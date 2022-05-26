@@ -27,9 +27,8 @@
     }
     ?>
 
-    <h2>Kontaktų forma</h2>
+    <h2>Skrydžio planavimas</h2>
     <form method="post">
-
         <div class="form-group mb-3">
             <select name="sourceAirport" class="form-control">
                 <option selected disabled>--Pasirinkite išvykimo aerouostą--</option>
@@ -57,6 +56,14 @@
             </select>
         </div>
 
+        <div class="form-group mb-3">
+            <select name="price" class="form-control">
+                <option selected disabled>--Kaina--</option>
+                <?php foreach ($prices as $fPrice):?>
+                    <option value="<?=$fPrice;?>"><?=$fPrice.' eur.';?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
 
         <div class="form-group mb-3">
             <select name="luggageWeight" class="form-control">
@@ -67,7 +74,7 @@
             </select>
         </div>
 
-        <div class="form-group mb-3" required>
+        <div class="form-group mb-3">
             <input type="text" class="form-control" name="firstName" placeholder="Vardas">
         </div>
         <div class="form-group mb-3">
@@ -76,8 +83,9 @@
         <div class="form-group mb-3">
             <input type="text" class="form-control" name="idNumber" placeholder="Asmens kodas">
         </div>
-
-
+        <div class="form-group mb-3">
+             <input type="textarea" class="form-control" name="notes" rows="3"></textarea>
+        </div>
 
         <button class="btn btn-primary" name="save">Saugoti</button>
     </form>
