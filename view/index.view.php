@@ -16,8 +16,8 @@
 
 <div class="container">
     <?php if(isset($_POST['save'])){
-        if ($_POST['luggageWeight'] > 20) {$lugTax=20 and $_POST['price'] +=20;} else {$lugTax="";}
-        $seqArray = array_values($_POST); $seqArray[5] = $seqArray[7]; $seqArray[7] = $_POST['price']; $seqArray[6] = $lugTax;
+        if ($_POST['luggageWeight'] > 20) {$lugTax=20;} else {$lugTax=0;}
+        $seqArray = array_values($_POST); $seqArray[5] = $seqArray[7]; $seqArray[7] = $seqArray[3] + $lugTax; $seqArray[6] = $lugTax;
 //        var_dump($_POST); var_dump($seqArray);
         $lines = file('table.txt'); $i = 0;
         foreach ($lines as $num=>$line)
