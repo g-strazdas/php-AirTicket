@@ -1,55 +1,60 @@
 <!doctype html>
 <html lang="lt">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS -->
+    <link href="style.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Aerouosto bilietas</title>
+    <title>Flight Ticket</title>
 </head>
-<body>
-<div class="container">
-    <?php
-    if(isset($_POST['save'])){
-//        echo "<h2>Formos duomenys</h2>";
-        var_dump($_POST);
-            foreach ($_POST as $value){
-                echo "<li>$value</li>";
-            }
-        foreach ($_POST as $key=>$value){
-            if($key !='save'){
-                echo "<li>$value</li>";
-            }
-        }
-        echo $_POST['sourceAirport'];
+<!--DDEV VISAI NEVEIKĖ STYLE.CSS O PHPSTORM - NENUSKAITINĖJO DUOMENŲ, DĖL TO ĮRAŠIAU INCLUDE ČIA, NES NEĮMANOMA DIRBTI - SUGAIŠAU TAM DIENĄ-->
+<?php include "../data/cities.php"; include "../data/luggage.php"; include "../data/flights.php"; include "../data/prices.php";?>
 
-    }
+<?php $date = new DateTime("now", new DateTimeZone('Europe/Vilnius'));?>
+
+<body>
+
+<div class="container">
+    <?php if(isset($_POST['save'])){
+        if ($_POST['luggageWeight'] > 20) {
+            $lugTax=20 and $_POST['price'] +=20;
+        } else {
+            $lugTax="";
+        }
+        echo '<br><table class="ticket"><thead><tr><th colspan="20">Check your flight information before flight</th></tr></thead><tbody><tr><td colspan="3" rowspan="3">';
+echo $date->add(DateInterval::createFromDateString("2 days"))->format("Y-m-d H:i"); echo '</td><td colspan="2" class="one">From:</td><td colspan="8">';
+echo $_POST['sourceAirport']; echo '</td><td colspan="7" class="one two">Additional Information:</td></tr>';echo '<tr><td colspan="2" class="one">To:</td><td colspan="8">';
+echo $_POST['destinationAirport']; echo '</td><td colspan="3" class="one two">Return Flight:</td><td colspan="4" class="two">'; echo $date->add(DateInterval::createFromDateString('16 days'))->format('Y-m-d H:i');
+echo '</td></tr><tr><td colspan="3" class="one">Flight Number:</td><td colspan="7">'; echo $_POST['flightNr']; echo '</td><td colspan="5" class="one two">Price:</td><td colspan="2" class="two">';
+echo $_POST['price']; echo '</td></tr>'; echo '<tr><td colspan="4" class="one">Passenger Name:</td><td colspan="9">'; echo $_POST['firstName'].' '.$_POST['lastName']; echo '</td><td colspan="5" class="one two">Luggage Weight:</td><td colspan="2" class="two">';
+echo $_POST['luggageWeight']; echo '</td></tr><tr><td colspan="4" class="one">Passenger ID Number:</td><td colspan="9">'; echo $_POST['idNumber']; echo '</td><td colspan="5" class="one two">Luggage Tax:</td><td colspan="2" class="two">';
+echo $lugTax;echo '</td></tr><tr><td colspan="13"></td><td colspan="5" class="one two">Total Price:</td><td colspan="2" class="two">'; echo $_POST['price'] ; echo '</td></tr></tbody></table>';
+  }
     ?>
 
-    <h2>Skrydžio planavimas</h2>
+    <h3>FLIGHT PLANNING</h3>
     <form method="post">
         <div class="form-group mb-3">
-            <select name="sourceAirport" class="form-control">
-                <option selected disabled>--Pasirinkite išvykimo aerouostą--</option>
+            <select name="sourceAirport" required class="form-control">
+                <option selected disabled value="">--FLYING FROM--</option>
                 <?php foreach ($cities as $cID => $cValue):?>
-                    <option value="<?=$cValue;?>"><?=$cValue.' '.strtoupper($cID);?></option>
+                    <option value="<?=$cValue.' '.strtoupper($cID);?>"><?=$cValue.' '.strtoupper($cID);?></option>
                 <?php endforeach;?>
             </select>
         </div>
 
         <div class="form-group mb-3">
-            <select name="destinationAirport" class="form-control">
-                <option selected disabled>--Pasirinkite atvykimo aerouostą--</option>
+            <select name="destinationAirport" required class="form-control">
+                <option selected disabled value="">--FLYING TO--</option>
                 <?php foreach ($cities as $cID => $cValue):?>
-                    <option value="<?=$cValue;?>"><?=$cValue.' '.strtoupper($cID);?></option>
+                    <option value="<?=$cValue.' '.strtoupper($cID);?>"><?=$cValue.' '.strtoupper($cID);?></option>
                 <?php endforeach;?>
             </select>
         </div>
 
         <div class="form-group mb-3">
-            <select name="flightNr" class="form-control">
-                <option selected disabled>--Pasirinkite skrydžio numerį--</option>
+            <select name="flightNr" required class="form-control">
+                <option selected disabled value="">--FLIGHT NUMBER--</option>
                 <?php foreach ($flights as $fNr):?>
                     <option value="<?=$fNr;?>"><?=$fNr;?></option>
                 <?php endforeach;?>
@@ -57,8 +62,8 @@
         </div>
 
         <div class="form-group mb-3">
-            <select name="price" class="form-control">
-                <option selected disabled>--Kaina--</option>
+            <select name="price" required class="form-control">
+                <option selected disabled value="">--PRICE--</option>
                 <?php foreach ($prices as $fPrice):?>
                     <option value="<?=$fPrice;?>"><?=$fPrice.' eur.';?></option>
                 <?php endforeach;?>
@@ -66,8 +71,8 @@
         </div>
 
         <div class="form-group mb-3">
-            <select name="luggageWeight" class="form-control">
-                <option selected disabled>--Pasirinkite bagažo svorį--</option>
+            <select name="luggageWeight" required class="form-control">
+                <option selected disabled value="">--LUGGAGE WEIGHT--</option>
                 <?php foreach ($weight as $lKg):?>
                     <option value="<?=$lKg;?>"><?=$lKg.' Kg';?></option>
                 <?php endforeach;?>
@@ -75,25 +80,21 @@
         </div>
 
         <div class="form-group mb-3">
-            <input type="text" class="form-control" name="firstName" placeholder="Vardas">
+            <input type="text" class="form-control" name="firstName" placeholder="--NAME--" required>
         </div>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" name="lastName" placeholder="Pavarde">
+            <input type="text" class="form-control" name="lastName" placeholder="--SURNAME--" required>
         </div>
         <div class="form-group mb-3">
-            <input type="text" class="form-control" name="idNumber" placeholder="Asmens kodas">
+            <input type="text" class="form-control" name="idNumber" placeholder="--PERSONAL ID CODE--" required>
         </div>
         <div class="form-group mb-3">
-             <input type="textarea" class="form-control" name="notes" rows="3"></textarea>
+            <textarea class="form-control" name="notes" rows="3" placeholder="--NOTES--" style="resize: none;"></textarea>
         </div>
-
-        <button class="btn btn-primary" name="save">Saugoti</button>
+        <button class="btn btn-primary" name="save">SUBMIT</button>
     </form>
 </div>
-<p><?php var_dump($weight);?></p>
-<?php foreach ($weight as $lKg):?>
-    <p><?= var_dump($lKg);?></p>
-<?php endforeach;?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
